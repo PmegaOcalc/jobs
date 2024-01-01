@@ -1,4 +1,4 @@
-const n = [
+const badWords = [
     "us based",
     "remote us",
     "us-only",
@@ -211,15 +211,32 @@ const scoreWords = [
     },
 ];
 
+const Node = {
+    ELEMENT_NODE: 1,
+    TEXT_NODE: 3,
+    // Add other constants as needed
+};
+
+function extractText(node) {
+    let text = "";
+    if (node.nodeType === Node.TEXT_NODE) {
+        text += node.nodeValue + " ";
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+        for (let i = 0; i < node.childNodes.length; i++) {
+            text += extractText(node.childNodes[i]);
+        }
+    }
+    return text;
+}
+
 export const parseJobBuilder =
     ({ survivors, textLengths }) =>
     (job) => {
         let text = "";
-        text = job.textContent;
+        text = extractText(job);
 
         let lowerText = text
             .toLowerCase()
-            // replace multiple spaces with a single space globally
             .replace(/\s\s+/g, " ")
             .replace(/\(/g, "")
             .replace(/\)/g, "");
@@ -246,12 +263,12 @@ export const parseJobBuilder =
         }
 
         let ok = true;
-        for (let i = 0; i < n.length; i++) {
-            if (lowerText.includes(badWords[i])) {
-                ok = false;
-                return;
-            }
-        }
+        // for (let i = 0; i < badWords.length; i++) {
+        //     if (lowerText.includes(badWords[i])) {
+        //         ok = false;
+        //         return;
+        //     }
+        // }
 
         let jobScore = 0;
         for (let i = 0; i < scoreWords.length; i++) {
