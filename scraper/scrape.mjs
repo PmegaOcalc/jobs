@@ -3,7 +3,7 @@ const { JSDOM } = jsdom;
 import { parseJobBuilder } from "./parseJobBuilder.mjs";
 import fs from "fs";
 
-const name = "december-2023";
+const name = "september-2025";
 
 const url = `https://hnhiring.com/${name}`;
 

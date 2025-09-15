@@ -1,14 +1,18 @@
 const badWords = [
     "us based",
+    "onsite sf",
     "remote us",
     "us-only",
     "us only",
     "north america only",
     "remote us",
+    "austin, tx",
     "remote canada",
+    "remote india",
     "us-based remote",
     "us time zones only",
     "us remote",
+    "us resident",
     "must be a us",
     "us timezone",
     "remote us-based",
@@ -21,21 +25,76 @@ const badWords = [
     "remote uk",
     ".net",
     "c#",
+    "remote from the united states",
     "f#",
+    "remote u.s.",
     "u.s. time zones required",
     "clojurescript",
+    "est timezone",
+    "bay area",
+    "sf bay",
+    "usa | remote",
 ];
 const scoreWords = [
     { word: "profitable", score: 50 },
     { word: "bootstrapped", score: 50 },
     { word: "revenue", score: 50 },
+    { word: 'revenue', score: 20 },
+    {
+        word: 'remote-first',
+        score: 10,
+    },
+    {
+        word: 'us/india',
+        score: -100,
+    },
+    {
+        word: 'london, uk',
+        score: -70,
+    }
+    {
+        word: 'fully-remote',
+        score: 50,
+    },
+    {
+        word: 'zurich',
+        score: 70,
+    },
+    {
+        word: 'switzerland',
+        score: 70,
+    },
+    {
+        word: 'next',
+        score: 10,
+    },
+    {
+        word: 'creative',
+        score: 10,
+    },
+    {
+        word: 'open-minded',
+        score: 10,
+    },
+    {
+        word: 'test',
+        score: 10,
+    },
+    {
+        word: 'trunk',
+        score: 10,
+    },
+    {
+        word: 'c#',
+        score: -10,
+    },
     {
         word: "€",
-        score: 100,
+        score: 50,
     },
     {
         word: "$",
-        score: 100,
+        score: 25,
     },
     {
         word: "central european",
@@ -70,16 +129,28 @@ const scoreWords = [
         score: 40,
     },
     {
+        word: 'onsite',
+        score: -10,
+    },
+    {
+        word: 'utc',
+        score: 5,
+    },
+    {
         word: "typescript",
-        score: 50,
+        score: 100,
     },
     {
         word: "postgres",
         score: 30,
     },
     {
+        word: 'php',
+        score: -100,
+    },
+    {
         word: "graphql",
-        score: 10,
+        score: 20,
     },
     {
         word: "remote only",
@@ -87,19 +158,15 @@ const scoreWords = [
     },
     {
         word: "remote ok",
-        score: -10,
+        score: 10,
     },
     {
         word: "salary",
-        score: 10,
+        score: 20,
     },
     {
         word: "webassembly",
         score: 10,
-    },
-    {
-        word: "tailwind",
-        score: -10,
     },
     {
         word: "golang",
@@ -110,12 +177,40 @@ const scoreWords = [
         score: -20,
     },
     {
+        word: 'fully remote',
+        score: 50,
+    },
+    {
+        "several roles",
+        score: 50,
+    },
+    {
+        word: 'multiple roles',
+        score: 50,
+    },
+    {
+        word: 'multiple locations',
+        score: 50,
+    },
+    {
         word: "remote company",
         score: 10,
     },
     {
         word: "remote",
-        score: 10,
+        score: 30,
+    },
+    {
+        word: 'hybrid',
+        score: -20,
+    },
+    {
+        word: 'on-site',
+        score: -30,
+    },
+    {
+        word: 'onsite',
+        score: -30,
     },
     {
         word: "remote eu",
@@ -162,10 +257,6 @@ const scoreWords = [
         score: -50,
     },
     {
-        word: "mongo",
-        score: -50,
-    },
-    {
         word: "frontend engineer",
         score: 10,
     },
@@ -183,15 +274,15 @@ const scoreWords = [
     },
     {
         word: "python",
-        score: -50,
+        score: -10,
     },
     {
         word: "java",
-        score: -50,
+        score: -70,
     },
     {
         word: "kotlin",
-        score: -25,
+        score: -15,
     },
     {
         word: "crypto",
@@ -209,6 +300,64 @@ const scoreWords = [
         word: "web3",
         score: -100,
     },
+    {
+        word: 'pst',
+        score: -100,
+    },
+    {
+        word: 'est',
+        score: -100,
+    },
+    {
+        word: "remote us only",
+        score: -100,
+    },
+    {
+        word: "postgresql",
+        score: 20,
+    },
+    {
+        word: "mongo",
+        score: -10,
+    },
+    {
+        word: "remote eu",
+        score: 100,
+    },
+    {
+        word: 'tanstack',
+        score: 10,
+    },
+    {
+        word: "in-person",
+        score: -10,
+    },
+    {
+        word: 'remote global',
+        score: 50,
+    },
+    {
+        word: "remote within eu",
+        score: 100,
+    },
+    {
+        word: 'remote europe',
+        score: 100,
+    },
+
+    {
+        word: "remote within uk",
+        score: -100,
+    },
+    {
+        word: "remote within us",
+        score: -100,
+    },
+    {
+        word: "remote within canada",
+        score: -100,
+    },
+
 ];
 
 const Node = {
@@ -231,57 +380,57 @@ function extractText(node) {
 
 export const parseJobBuilder =
     ({ survivors, textLengths }) =>
-    (job) => {
-        let text = "";
-        text = extractText(job);
+        (job) => {
+            let text = "";
+            text = extractText(job);
 
-        let lowerText = text
-            .toLowerCase()
-            .replace(/\s\s+/g, " ")
-            .replace(/\(/g, "")
-            .replace(/\)/g, "");
+            let lowerText = text
+                .toLowerCase()
+                .replace(/\s\s+/g, " ")
+                .replace(/\(/g, "")
+                .replace(/\)/g, "");
 
-        const textLength = text.length;
-        textLengths.push(textLength * 1);
-        // console.log(textLength);
+            const textLength = text.length;
+            textLengths.push(textLength * 1);
+            // console.log(textLength);
 
-        // update text to be single line
-        lowerText = lowerText
-            .replace(/\n/g, " ")
-            .replace(/\r/g, " ")
-            .replace(/\t/g, " ")
-            .trim();
+            // update text to be single line
+            lowerText = lowerText
+                .replace(/\n/g, " ")
+                .replace(/\r/g, " ")
+                .replace(/\t/g, " ")
+                .trim();
 
-        // filter out [dead] or [flagged] jobs
-        if (lowerText.includes("[dead]") || lowerText.includes("[flagged]")) {
-            return;
-        }
-
-        // filter out empty strings
-        if (lowerText.length < 1) {
-            return;
-        }
-
-        let ok = true;
-        // for (let i = 0; i < badWords.length; i++) {
-        //     if (lowerText.includes(badWords[i])) {
-        //         ok = false;
-        //         return;
-        //     }
-        // }
-
-        let jobScore = 0;
-        for (let i = 0; i < scoreWords.length; i++) {
-            if (lowerText.includes(scoreWords[i].word)) {
-                jobScore += scoreWords[i].score;
+            // filter out [dead] or [flagged] jobs
+            if (lowerText.includes("[dead]") || lowerText.includes("[flagged]")) {
+                return;
             }
-        }
 
-        if (ok) {
-            survivors.push({
-                textLength,
-                job: lowerText,
-                score: jobScore,
-            });
-        }
-    };
+            // filter out empty strings
+            if (lowerText.length < 1) {
+                return;
+            }
+
+            let ok = true;
+            for (let i = 0; i < badWords.length; i++) {
+                if (lowerText.includes(badWords[i])) {
+                    ok = false;
+                    return;
+                }
+            }
+
+            let jobScore = 0;
+            for (let i = 0; i < scoreWords.length; i++) {
+                if (lowerText.includes(scoreWords[i].word)) {
+                    jobScore += scoreWords[i].score;
+                }
+            }
+
+            if (ok) {
+                survivors.push({
+                    textLength,
+                    job: lowerText,
+                    score: jobScore,
+                });
+            }
+        };
