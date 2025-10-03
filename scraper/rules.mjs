@@ -6,7 +6,6 @@ export default {
         "us-only",
         "us only",
         "north america only",
-        "remote us",
         "austin, tx",
         "remote canada",
         "remote india",
@@ -18,7 +17,6 @@ export default {
         "us timezone",
         "remote us-based",
         "remote in canada",
-        "us only",
         "canada only",
         "us-remote",
         "usa pacific time",
@@ -40,7 +38,6 @@ export default {
         { word: "profitable", score: 50 },
         { word: "bootstrapped", score: 50 },
         { word: "revenue", score: 50 },
-        { word: 'revenue', score: 20 },
         {
             word: 'remote-first',
             score: 10,
