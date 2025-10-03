@@ -129,10 +129,6 @@ const scoreWords = [
         score: 40,
     },
     {
-        word: 'onsite',
-        score: -10,
-    },
-    {
         word: 'utc',
         score: 5,
     },
@@ -213,10 +209,6 @@ const scoreWords = [
         score: -30,
     },
     {
-        word: "remote eu",
-        score: 15,
-    },
-    {
         word: "remote anywhere",
         score: 15,
     },
@@ -269,6 +261,10 @@ const scoreWords = [
         score: 10,
     },
     {
+        word: "product engineer",
+        score: 10,
+    },
+    {
         word: "ruby",
         score: -50,
     },
@@ -313,10 +309,6 @@ const scoreWords = [
         score: -100,
     },
     {
-        word: "postgresql",
-        score: 20,
-    },
-    {
         word: "mongo",
         score: -10,
     },
@@ -340,11 +332,6 @@ const scoreWords = [
         word: "remote within eu",
         score: 100,
     },
-    {
-        word: 'remote europe',
-        score: 100,
-    },
-
     {
         word: "remote within uk",
         score: -100,

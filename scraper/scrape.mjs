@@ -49,6 +49,7 @@ const rank = (htmlString) => {
             `Score: ${Math.round(survivor.score)}, Normalized: ${survivor.normalized * 1}, Bonus: ${Math.round(survivor.bonus)}`
         );
         console.log(`Matched scores:`, JSON.stringify(survivor.matchedScores));
+        console.log('\n');
         // save to file - just the ad
         fs.appendFileSync(`./${name}.txt`, `${survivor.job}\n`);
     });
