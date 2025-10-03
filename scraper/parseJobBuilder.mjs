@@ -420,9 +420,11 @@ export const parseJobBuilder =
             }
 
             let jobScore = 0;
+            let matchedScores = [];
             for (let i = 0; i < scoreWords.length; i++) {
                 if (lowerText.includes(scoreWords[i].word)) {
                     jobScore += scoreWords[i].score;
+                    matchedScores.push({ [scoreWords[i].word]: scoreWords[i].score });
                 }
             }
 
@@ -431,6 +433,7 @@ export const parseJobBuilder =
                     textLength,
                     job: lowerText,
                     score: jobScore,
+                    matchedScores,
                 });
             }
         };
