@@ -3,13 +3,13 @@ const { JSDOM } = jsdom;
 import { parseJobBuilder } from "./parseJobBuilder.mjs";
 import fs from "fs";
 
-const name = "september-2025";
+const name = "october-2025";
 
 const url = `https://hnhiring.com/${name}`;
 
 const rank = (htmlString) => {
     const survivors = [];
-    let textLengths = [];
+    let textLengths = []; // stores text lengths of all job postings
 
     const dom = new JSDOM(htmlString);
     const doc = dom.window.document;
@@ -25,20 +25,20 @@ const rank = (htmlString) => {
         return b - a;
     });
 
-    const min = textLengths[textLengths.length - 1];
-    const max = textLengths[0];
+    const min = textLengths[textLengths.length - 1]; // shortest job posting text length
+    const max = textLengths[0]; // longest job posting text length
 
     survivors.forEach((survivor) => {
-        const normalized = (survivor.textLength - min) / (max - min);
-        survivor.normalized = normalized.toFixed(3);
-        const bonus = 300 - normalized * normalized * normalized * 100;
+        const normalized = (survivor.textLength - min) / (max - min); // normalize text length to 0-1 range
+        survivor.normalized = normalized.toFixed(3); // store as 3 decimal places
+        const bonus = 300 - normalized * normalized * normalized * 100; // cubic bonus: shorter posts get exponentially more bonus
         survivor.bonus = bonus;
 
-        survivor.score = survivor.score + bonus;
+        survivor.score = survivor.score + bonus; // add bonus points to base score
     });
 
     const sorted = survivors.sort((a, b) => {
-        return b.score - a.score;
+        return b.score - a.score; // sort jobs by total score (highest first)
     });
 
     fs.writeFileSync(`./${name}.txt`, ``);
@@ -46,9 +46,7 @@ const rank = (htmlString) => {
     sorted.forEach((survivor, index) => {
         console.log(index, survivor.job);
         console.log(
-            Math.round(survivor.score),
-            survivor.normalized * 1,
-            Math.round(survivor.bonus)
+            `Score: ${Math.round(survivor.score)}, Normalized: ${survivor.normalized * 1}, Bonus: ${Math.round(survivor.bonus)}`
         );
         // save to file - just the ad
         fs.appendFileSync(`./${name}.txt`, `${survivor.job}\n`);

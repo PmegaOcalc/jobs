@@ -51,7 +51,7 @@ const scoreWords = [
     {
         word: 'london, uk',
         score: -70,
-    }
+    },
     {
         word: 'fully-remote',
         score: 50,
@@ -181,7 +181,7 @@ const scoreWords = [
         score: 50,
     },
     {
-        "several roles",
+        word: "several roles",
         score: 50,
     },
     {
