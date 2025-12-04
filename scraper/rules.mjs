@@ -319,10 +319,6 @@ export default {
             score: 10,
         },
         {
-            word: "in-person",
-            score: -10,
-        },
-        {
             word: 'remote global',
             score: 50,
         },
