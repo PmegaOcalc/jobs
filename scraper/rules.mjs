@@ -75,6 +75,18 @@ export default {
             score: 10,
         },
         {
+            word: 'cursor',
+            score: 100,
+        },
+        {
+            word: 'claude',
+            score: 100,
+        },
+        {
+            word: 'ai coding',
+            score: 100,
+        },
+        {
             word: 'test',
             score: 10,
         },
