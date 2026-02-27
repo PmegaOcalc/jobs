@@ -2,6 +2,11 @@ import jsdom from "jsdom";
 const { JSDOM } = jsdom;
 import { parseJobBuilder } from "./parseJobBuilder.mjs";
 import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const OUTPUT_DIR = path.join(__dirname, "output");
 
 const name = "february-2026";
 
@@ -41,7 +46,9 @@ const rank = (htmlString) => {
         return b.score - a.score; // sort jobs by total score (highest first)
     });
 
-    fs.writeFileSync(`./${name}.txt`, ``);
+    const txtPath = path.join(OUTPUT_DIR, `${name}.txt`);
+    fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+    fs.writeFileSync(txtPath, ``);
 
     sorted.forEach((survivor, index) => {
         console.log(index, survivor.job);
@@ -51,19 +58,21 @@ const rank = (htmlString) => {
         console.log(`Matched scores:`, JSON.stringify(survivor.matchedScores));
         console.log('\n');
         // save to file - just the ad
-        fs.appendFileSync(`./${name}.txt`, `${survivor.job}\n`);
+        fs.appendFileSync(txtPath, `${survivor.job}\n`);
     });
 };
 
 const scrape = async () => {
-    if (fs.existsSync(`./${name}.html`)) {
-        const html = fs.readFileSync(`./${name}.html`, `utf8`);
+    const htmlPath = path.join(OUTPUT_DIR, `${name}.html`);
+    if (fs.existsSync(htmlPath)) {
+        const html = fs.readFileSync(htmlPath, `utf8`);
         rank(html);
         return;
     }
 
     const html = await fetch(url).then((res) => res.text());
-    fs.writeFileSync(`./${name}.html`, html);
+    fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+    fs.writeFileSync(htmlPath, html);
     rank(html);
 };
 
